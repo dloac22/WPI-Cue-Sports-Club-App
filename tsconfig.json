@@ -3,7 +3,7 @@
     "target": "ES6",
     "module": "CommonJS",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "lib": [
       "dom",
       "dom.iterable",
