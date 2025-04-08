@@ -5,6 +5,17 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 const app = express();
+const db = require('./db'); 
+
+app.get('/api/matches', (req, res) => {
+  db.query('SELECT * FROM matches', (err, results) => {
+    if (err) {
+      res.status(500).send({ message: 'Error fetching matches' });
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 app.use(cors());
 app.use(express.json());
