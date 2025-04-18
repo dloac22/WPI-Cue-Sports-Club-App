@@ -101,7 +101,7 @@ const LeagueDetail: React.FC = () => {
             <th>Player 1</th>
             <th>Score</th>
             <th>Player 2</th>
-            <th>Status</th>
+            <th>Status</th>````
             <th>Handicap</th>
           </tr>
         </thead>

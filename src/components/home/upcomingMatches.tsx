@@ -1,4 +1,3 @@
-import React, { useState, use } from 'react';
 import { Card } from 'react-bootstrap';
 
 const UpcomingMatches = () => {

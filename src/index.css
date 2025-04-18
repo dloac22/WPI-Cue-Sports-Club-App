@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Add some basic styles for the main content area */
+.main-content {
+  padding: 20px;
+  margin-left: 250px; /* Same as sidebar width */
+}
