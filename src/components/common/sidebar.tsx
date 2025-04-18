@@ -1,47 +1,77 @@
-import React from 'react';
-import { Nav } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Nav, Image, Form } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../../context/authContext';
+import styles from './Sidebar.module.css';
 
 const Sidebar: React.FC = () => {
+  const { user, setUser } = useAuth();
   const location = useLocation();
-  const { user } = useAuth();
+  const [profilePic, setProfilePic] = useState(user?.profilePicture || 'https://via.placeholder.com/80');
 
-  const menuItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Profile', path: '/profile' },
-    { name: 'Tournaments', path: '/tournaments' },
-    { name: 'Practice', path: '/practice' },
-    { name: 'Drills', path: '/drills' }
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newProfilePic = reader.result as string;
+        setProfilePic(newProfilePic);
+        if (user) {
+          setUser({ ...user, profilePicture: newProfilePic });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const navItems = [
+    { path: '/', label: 'Home' },
+    { path: '/drills', label: 'Drills' },
+    { path: '/practice', label: 'Practice' },
+    { path: '/profile', label: 'Profile' },
+    { path: '/tournaments', label: 'Tournaments' },
   ];
 
   return (
-    <div className="sidebar bg-dark text-white d-flex flex-column" style={{ width: '250px', minHeight: '100vh' }}>
-      <div className="d-flex align-items-center justify-content-center py-4">
-        <div className="text-center">
-          <img 
-            src={user?.profilePicture} 
-            alt="User" 
-            className="rounded-circle mb-3" 
-            style={{ width: '80px', height: '80px', objectFit: 'cover' }} 
+    <div className={styles.sidebar}>
+      <div className={styles.profileSection}>
+        <div className={styles.profilePicContainer}>
+          <Image 
+            src={profilePic} 
+            roundedCircle 
+            className={styles.profilePic}
+            style={{ width: '80px', height: '80px', cursor: 'pointer' }}
           />
-          <h5>{user ? user.name : 'Guest'}</h5>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePicChange}
+            style={{ display: 'none' }}
+            id="profile-pic-input"
+          />
+          <label htmlFor="profile-pic-input" className={styles.profilePicLabel}>
+            Click to change
+          </label>
         </div>
+        <h4 className="mt-3">Hello, {user?.name || 'Guest'}</h4>
       </div>
-
-      <Nav className="flex-column mt-2">
-        {menuItems.map((item, index) => (
-          <Link 
-            to={item.path} 
-            key={index}
-            className={`py-3 ${location.pathname === item.path ? 'active bg-secondary' : ''}`}
-          >
-            {item.name}
-          </Link>
+      
+      <Nav className="flex-column mt-4">
+        {navItems.map((item) => (
+          <Nav.Item key={item.path}>
+            <Nav.Link 
+              as={Link} 
+              to={item.path}
+              active={location.pathname === item.path}
+              className={styles.navLink}
+            >
+              {item.label}
+            </Nav.Link>
+          </Nav.Item>
         ))}
       </Nav>
     </div>
   );
 };
 
-export default Sidebar;
+export default Sidebar; 
